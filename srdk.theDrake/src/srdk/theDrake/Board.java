@@ -19,12 +19,20 @@ public class Board {
         this.board = board;
     }
 
-    private BoardTile[][] fillBoard(TileAt... ats) {
+    private BoardTile[][] cloneBoard(){
+        BoardTile[][] tmp = new BoardTile[dimension][];
+        for(int i=0;i<dimension;i++){
+            tmp[i]=board[i].clone();
+        }
+        return tmp;
+    }
+
+    private BoardTile[][] fillBoard(BoardTile[][] tmp, TileAt... ats) {
 
         for(TileAt tile : ats) {
-            board[tile.pos.i][tile.pos.j]=tile.tile;
+            tmp[tile.pos.i][tile.pos.j]=tile.tile;
         }
-        return board;
+        return tmp;
     }
 
     public int dimension() {
@@ -37,7 +45,7 @@ public class Board {
 
     public Board withTiles(TileAt ...ats) {
 
-        return new Board(fillBoard(ats));
+        return new Board(fillBoard(cloneBoard(), ats));
     }
 
     public Pos pos(int i, int j) {
