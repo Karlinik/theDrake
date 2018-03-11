@@ -19,7 +19,7 @@ public class Board {
         this.board = board;
     }
 
-    private BoardTile[][] createBoard(TileAt... ats) {
+    private BoardTile[][] fillBoard(TileAt... ats) {
 
         for(TileAt tile : ats) {
             board[tile.pos.i][tile.pos.j]=tile.tile;
@@ -37,7 +37,7 @@ public class Board {
 
     public Board withTiles(TileAt ...ats) {
 
-        return new Board(createBoard(ats));
+        return new Board(fillBoard(ats));
     }
 
     public Pos pos(int i, int j) {
