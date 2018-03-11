@@ -1,19 +1,14 @@
 package srdk.theDrake;
 
-import javax.sound.sampled.ReverbType;
-
 public enum TroopFace {
-    AVERS(REVERS),
-    REVERS(AVERS);
-
-    private final TroopFace otherFace;
-
-    private {
-        AVERS.otherFace = REVERS;
-        REVERS.otherFace = AVERS;
-    }
+    AVERS, REVERS {
+        @Override
+        public TroopFace flipped(){
+            return AVERS;
+        }
+    };
 
     public TroopFace flipped() {
-        return otherFace;
+        return REVERS;
     }
 }
