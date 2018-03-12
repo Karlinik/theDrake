@@ -1,16 +1,12 @@
 package srdk.theDrake;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class BoardTroops {
     private final PlayingSide playingSide;
     private final Map<Board.Pos, TroopTile> troopMap;
     private final TilePos leaderPosition;
-    private final int guards;
+    private int guards;
 
     public BoardTroops(
             PlayingSide playingSide,
@@ -18,18 +14,19 @@ public class BoardTroops {
             TilePos leaderPosition,
             int guards) {
         this.playingSide = playingSide;
-        this.troopMap= troopMap;
+        this.troopMap = troopMap;
         this.leaderPosition = leaderPosition;
         this.guards = guards;
     }
 
     public BoardTroops(PlayingSide playingSide) {
-        this(playingSide, new Map<Board.Pos, TroopTile>(), TilePos.OFF_BOARD, 0);
+        this(playingSide, new HashMap<>(), TilePos.OFF_BOARD, 0);
     }
 
 
     public Optional<TroopTile> at(TilePos pos) {
-        // Místo pro váš kód
+        //return new Optional<>(troopMap.get(pos));
+        return Optional.of(troopMap.get(pos));
     }
 
     public PlayingSide playingSide() {
@@ -37,7 +34,7 @@ public class BoardTroops {
     }
 
     public TilePos leaderPosition() {
-        // Místo pro váš kód
+        return leaderPosition;
     }
 
     public int guards() {
@@ -45,19 +42,32 @@ public class BoardTroops {
     }
 
     public boolean isLeaderPlaced() {
-        // Místo pro váš kód
+        return leaderPosition.equals(TilePos.OFF_BOARD);
     }
 
     public boolean isPlacingGuards() {
-        // Místo pro váš kód
+        return isLeaderPlaced() && guards<3;
     }
 
     public Set<Board.Pos> troopPositions() {
-        // Místo pro váš kód
+        Set<Board.Pos> troopPositions = Collections.emptySet();
+        for (Map.Entry<Board.Pos, TroopTile> entry : troopMap.entrySet())
+        {
+            if (entry.getValue().hasTroop())
+                troopPositions.add(entry.getKey());
+        }
+        return troopPositions;
     }
 
     public BoardTroops placeTroop(Troop troop, Board.Pos target) {
-        // Místo pro váš kód
+        if(!isLeaderPlaced())
+            return new BoardTroops(playingSide, troopMap, target, 0);
+        troopMap.put(target, new TroopTile(troop, playingSide, TroopFace.AVERS));
+        if (isPlacingGuards()){
+            //BoardTroops boardTroopTmp = new BoardTroops(playingSide, troopMap, leaderPosition, guards+1);
+            return new BoardTroops(playingSide, troopMap, leaderPosition, guards+1);
+        }
+        return new BoardTroops(playingSide, troopMap, leaderPosition, guards);
     }
 
     public BoardTroops troopStep(Board.Pos origin, Board.Pos target) {
