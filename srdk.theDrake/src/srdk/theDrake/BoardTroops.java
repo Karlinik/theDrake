@@ -71,7 +71,22 @@ public class BoardTroops {
     }
 
     public BoardTroops troopStep(Board.Pos origin, Board.Pos target) {
-        // Místo pro váš kód
+        if(!isLeaderPlaced()) {
+            throw new IllegalStateException(
+                    "Cannot move troops before the leader is placed.");
+        }
+        if(isPlacingGuards()) {
+            throw new IllegalStateException(
+                    "Cannot move troops before guards are placed.");
+        }
+        if(!at(origin).isPresent() || at(target).isPresent())
+            throw new IllegalArgumentException();
+
+        Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
+        newTroops.remove(target);
+        TroopTile tile = newTroops.remove(origin);
+        newTroops.put(target, tile.flipped());
+        return new BoardTroops(playingSide(), newTroops, leaderPosition, guards);
     }
 
     public BoardTroops troopFlip(Board.Pos origin) {
@@ -96,6 +111,21 @@ public class BoardTroops {
     }
 
     public BoardTroops removeTroop(Board.Pos target) {
-        // Místo pro váš kód
+        if(!isLeaderPlaced()) {
+            throw new IllegalStateException(
+                    "Cannot move troops before the leader is placed.");
+        }
+
+        if(isPlacingGuards()) {
+            throw new IllegalStateException(
+                    "Cannot move troops before guards are placed.");
+        }
+
+        if(!at(target).isPresent())
+            throw new IllegalArgumentException();
+
+        Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
+        newTroops.remove(target);
+        return new BoardTroops(playingSide(), newTroops, leaderPosition, guards);
     }
 }
