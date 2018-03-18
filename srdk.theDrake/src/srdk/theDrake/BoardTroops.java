@@ -20,17 +20,16 @@ public class BoardTroops {
     }
 
     public BoardTroops(PlayingSide playingSide) {
-        this(playingSide, new HashMap<>(), TilePos.OFF_BOARD, 0);
+        this(playingSide, Collections.emptyMap(), TilePos.OFF_BOARD, 0);
     }
 
 
     public Optional<TroopTile> at(TilePos pos) {
-        //return new Optional<>(troopMap.get(pos));
         return Optional.of(troopMap.get(pos));
     }
 
     public PlayingSide playingSide() {
-        // Místo pro váš kód
+        return playingSide;
     }
 
     public TilePos leaderPosition() {
@@ -38,7 +37,7 @@ public class BoardTroops {
     }
 
     public int guards() {
-        // Místo pro váš kód
+        return guards;
     }
 
     public boolean isLeaderPlaced() {
@@ -60,14 +59,19 @@ public class BoardTroops {
     }
 
     public BoardTroops placeTroop(Troop troop, Board.Pos target) {
+        if(at(target).isPresent())
+            throw new IllegalArgumentException();
+
+        Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
+        newTroops.put(target, new TroopTile(troop, playingSide, TroopFace.AVERS));
+
         if(!isLeaderPlaced())
-            return new BoardTroops(playingSide, troopMap, target, 0);
-        troopMap.put(target, new TroopTile(troop, playingSide, TroopFace.AVERS));
-        if (isPlacingGuards()){
-            //BoardTroops boardTroopTmp = new BoardTroops(playingSide, troopMap, leaderPosition, guards+1);
-            return new BoardTroops(playingSide, troopMap, leaderPosition, guards+1);
-        }
-        return new BoardTroops(playingSide, troopMap, leaderPosition, guards);
+            return new BoardTroops(playingSide, newTroops, target, 0);
+
+        if (isPlacingGuards())
+            return new BoardTroops(playingSide, newTroops, leaderPosition, guards+1);
+
+        return new BoardTroops(playingSide, newTroops, leaderPosition, guards);
     }
 
     public BoardTroops troopStep(Board.Pos origin, Board.Pos target) {
