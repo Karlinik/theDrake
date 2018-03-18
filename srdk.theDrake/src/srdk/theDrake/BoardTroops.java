@@ -25,8 +25,7 @@ public class BoardTroops {
 
 
     public Optional<TroopTile> at(TilePos pos) {
-        //TBD - vraceni prazdne
-        if(troopMap.get(pos).equals(null))
+        if(troopMap.get(pos) == null)
             return Optional.empty();
         return Optional.of(troopMap.get(pos));
     }
@@ -48,7 +47,7 @@ public class BoardTroops {
     }
 
     public boolean isPlacingGuards() {
-        return isLeaderPlaced() && guards<2;
+        return isLeaderPlaced() && guards < 2;
     }
 
     public Set<Board.Pos> troopPositions() {
@@ -62,9 +61,8 @@ public class BoardTroops {
     }
 
     public BoardTroops placeTroop(Troop troop, Board.Pos target) {
-        //if(at(target).isPresent())
-          //  throw new IllegalArgumentException();
-        //Dokud se neopravi metoda at ... jinak to porad hazi vyjimku
+        if(at(target).isPresent())
+            throw new IllegalArgumentException();
 
         Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
         newTroops.put(target, new TroopTile(troop, playingSide, TroopFace.AVERS));
@@ -79,35 +77,29 @@ public class BoardTroops {
     }
 
     public BoardTroops troopStep(Board.Pos origin, Board.Pos target) {
-        if(!isLeaderPlaced()) {
-            throw new IllegalStateException(
-                    "Cannot move troops before the leader is placed.");
-        }
-        if(isPlacingGuards()) {
-            throw new IllegalStateException(
-                    "Cannot move troops before guards are placed.");
-        }
-        //if(!at(origin).isPresent() || at(target).isPresent())
-          //  throw new IllegalArgumentException();
-        //Dokud se neopravi metoda at ... jinak to porad hazi vyjimku
+        if(!isLeaderPlaced())
+            throw new IllegalStateException ("Cannot move troops before the leader is placed.");
+
+        if(isPlacingGuards())
+            throw new IllegalStateException ("Cannot move troops before guards are placed.");
+
+        if(!at(origin).isPresent() || at(target).isPresent())
+            throw new IllegalArgumentException();
 
         Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
-        newTroops.remove(target);
         TroopTile tile = newTroops.remove(origin);
         newTroops.put(target, tile.flipped());
+        if(origin.equals(leaderPosition))
+            return new BoardTroops(playingSide(), newTroops, target, guards);
         return new BoardTroops(playingSide(), newTroops, leaderPosition, guards);
     }
 
     public BoardTroops troopFlip(Board.Pos origin) {
-        if(!isLeaderPlaced()) {
-            throw new IllegalStateException(
-                    "Cannot move troops before the leader is placed.");
-        }
+        if(!isLeaderPlaced())
+            throw new IllegalStateException("Cannot move troops before the leader is placed.");
 
-        if(isPlacingGuards()) {
-            throw new IllegalStateException(
-                    "Cannot move troops before guards are placed.");
-        }
+        if(isPlacingGuards())
+            throw new IllegalStateException("Cannot move troops before guards are placed.");
 
         if(!at(origin).isPresent())
             throw new IllegalArgumentException();
@@ -120,23 +112,18 @@ public class BoardTroops {
     }
 
     public BoardTroops removeTroop(Board.Pos target) {
-        if(!isLeaderPlaced()) {
-            throw new IllegalStateException(
-                    "Cannot remove troops before the leader is placed.");
-        }
+        if(!isLeaderPlaced())
+            throw new IllegalStateException("Cannot remove troops before the leader is placed.");
 
-        if(isPlacingGuards()) {
-            throw new IllegalStateException(
-                    "Cannot remove troops before guards are placed.");
-        }
+        if(isPlacingGuards())
+            throw new IllegalStateException("Cannot remove troops before guards are placed.");
 
-        //if(!at(target).isPresent())
-          //  throw new IllegalArgumentException();
-        //Dokud se neopravi metoda at ... jinak to porad hazi vyjimku
+        if(!at(target).isPresent())
+            throw new IllegalArgumentException();
 
         Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
         newTroops.remove(target);
-        if(leaderPosition == target)
+        if(leaderPosition.equals(target))
             return new BoardTroops(playingSide(), newTroops, TilePos.OFF_BOARD, guards);
         return new BoardTroops(playingSide(), newTroops, leaderPosition, guards);
     }
