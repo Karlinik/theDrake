@@ -1,16 +1,15 @@
 package suite01;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import srdk.theDrake.Offset2D;
+import srdk.theDrake.Troop;
+import srdk.theDrake.TroopFace;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
-
-import srdk.theDrake.Offset2D;
-import srdk.theDrake.Troop;
-import srdk.theDrake.TroopFace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TroopTest {
 

@@ -1,15 +1,11 @@
 package suite01;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.Test;
+import srdk.theDrake.Offset2D;
 
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
-
-import srdk.theDrake.Offset2D;
+import static org.junit.Assert.*;
 
 public class Offset2DTest {
 

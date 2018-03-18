@@ -48,7 +48,7 @@ public class BoardTroops {
     }
 
     public boolean isPlacingGuards() {
-        return isLeaderPlaced() && guards<3;
+        return isLeaderPlaced() && guards<2;
     }
 
     public Set<Board.Pos> troopPositions() {
@@ -70,7 +70,7 @@ public class BoardTroops {
         newTroops.put(target, new TroopTile(troop, playingSide, TroopFace.AVERS));
 
         if(!isLeaderPlaced())
-            return new BoardTroops(playingSide, newTroops, target, guards);
+            return new BoardTroops(playingSide, newTroops, target, 0);
 
         if (isPlacingGuards())
             return new BoardTroops(playingSide, newTroops, leaderPosition, guards+1);
@@ -79,7 +79,7 @@ public class BoardTroops {
     }
 
     public BoardTroops troopStep(Board.Pos origin, Board.Pos target) {
-        if(isLeaderPlaced()) {
+        if(!isLeaderPlaced()) {
             throw new IllegalStateException(
                     "Cannot move troops before the leader is placed.");
         }
@@ -87,8 +87,9 @@ public class BoardTroops {
             throw new IllegalStateException(
                     "Cannot move troops before guards are placed.");
         }
-        if(!at(origin).isPresent() || at(target).isPresent())
-            throw new IllegalArgumentException();
+        //if(!at(origin).isPresent() || at(target).isPresent())
+          //  throw new IllegalArgumentException();
+        //Dokud se neopravi metoda at ... jinak to porad hazi vyjimku
 
         Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
         newTroops.remove(target);
@@ -121,19 +122,22 @@ public class BoardTroops {
     public BoardTroops removeTroop(Board.Pos target) {
         if(!isLeaderPlaced()) {
             throw new IllegalStateException(
-                    "Cannot move troops before the leader is placed.");
+                    "Cannot remove troops before the leader is placed.");
         }
 
         if(isPlacingGuards()) {
             throw new IllegalStateException(
-                    "Cannot move troops before guards are placed.");
+                    "Cannot remove troops before guards are placed.");
         }
 
-        if(!at(target).isPresent())
-            throw new IllegalArgumentException();
+        //if(!at(target).isPresent())
+          //  throw new IllegalArgumentException();
+        //Dokud se neopravi metoda at ... jinak to porad hazi vyjimku
 
         Map<Board.Pos, TroopTile> newTroops = new HashMap<>(troopMap);
         newTroops.remove(target);
+        if(leaderPosition == target)
+            return new BoardTroops(playingSide(), newTroops, TilePos.OFF_BOARD, guards);
         return new BoardTroops(playingSide(), newTroops, leaderPosition, guards);
     }
 }
