@@ -2,15 +2,13 @@ package suite03;
 
 import org.junit.Test;
 import srdk.theDrake.*;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-
+import java.util.Optional;
 import static org.junit.Assert.*;
-
 public class BoardTroopsTest {
 
     @Test
@@ -26,8 +24,7 @@ public class BoardTroopsTest {
     public void placingTroops() {
         Board board = new Board(3);
 
-        // Jednotky na desce začínají prázdné, žádný vůdce,
-        // žádné stráže
+        // Jednotky na desce začínají prázdné, žádný vůdce, žádné stráže
         BoardTroops troops1 = new BoardTroops(PlayingSide.BLUE);
 
         assertSame(PlayingSide.BLUE, troops1.playingSide());
@@ -36,29 +33,29 @@ public class BoardTroopsTest {
         assertSame(false, troops1.isLeaderPlaced());
         assertSame(false, troops1.isPlacingGuards());
 
-        //checkEmpty(board, troops1);
+        checkEmpty(board, troops1);
 
 
         // Nejdříve postavíme vůdce
         Troop drake = new Troop("Drake");
         BoardTroops troops2 = troops1.placeTroop(drake, board.pos("a2"));
         assertTrue(troops1 != troops2);
-        //checkEmpty(board, troops1);
+        checkEmpty(board, troops1);
 
         assertSame(0, troops2.guards());
         assertSame(true, troops2.isLeaderPlaced());
         assertSame(true, troops2.isPlacingGuards());
         assertEquals(Collections.singleton(board.pos("a2")), troops2.troopPositions());
 
-        //assertEquals(Optional.empty(), troops2.at(board.pos("a1")));
+        assertEquals(Optional.empty(), troops2.at(board.pos("a1")));
         assertSame(drake, troops2.at(board.pos("a2")).get().troop());
-        //assertEquals(Optional.empty(), troops2.at(board.pos("a3")));
-        //assertEquals(Optional.empty(), troops2.at(board.pos("b1")));
-        /*assertEquals(Optional.empty(), troops2.at(board.pos("b2")));
+        assertEquals(Optional.empty(), troops2.at(board.pos("a3")));
+        assertEquals(Optional.empty(), troops2.at(board.pos("b1")));
+        assertEquals(Optional.empty(), troops2.at(board.pos("b2")));
         assertEquals(Optional.empty(), troops2.at(board.pos("b3")));
         assertEquals(Optional.empty(), troops2.at(board.pos("c1")));
         assertEquals(Optional.empty(), troops2.at(board.pos("c2")));
-        assertEquals(Optional.empty(), troops2.at(board.pos("c3")));*/
+        assertEquals(Optional.empty(), troops2.at(board.pos("c3")));
 
         assertSame(TroopFace.AVERS, troops2.at(board.pos("a2")).get().face());
         assertSame(troops2.playingSide(), troops2.at(board.pos("a2")).get().side());
@@ -82,13 +79,13 @@ public class BoardTroopsTest {
 
         assertSame(clubman1, troops3.at(board.pos("a1")).get().troop());
         assertSame(drake, troops3.at(board.pos("a2")).get().troop());
-        //assertEquals(Optional.empty(), troops3.at(board.pos("a3")));
-        /*assertEquals(Optional.empty(), troops3.at(board.pos("b1")));
+        assertEquals(Optional.empty(), troops3.at(board.pos("a3")));
+        assertEquals(Optional.empty(), troops3.at(board.pos("b1")));
         assertEquals(Optional.empty(), troops3.at(board.pos("b2")));
         assertEquals(Optional.empty(), troops3.at(board.pos("b3")));
         assertEquals(Optional.empty(), troops3.at(board.pos("c1")));
         assertEquals(Optional.empty(), troops3.at(board.pos("c2")));
-        assertEquals(Optional.empty(), troops3.at(board.pos("c3")));*/
+        assertEquals(Optional.empty(), troops3.at(board.pos("c3")));
 
         // Druhá stráž
         Troop clubman2 = new Troop("Clubman");
@@ -108,13 +105,13 @@ public class BoardTroopsTest {
 
         assertSame(clubman1, troops4.at(board.pos("a1")).get().troop());
         assertSame(drake, troops4.at(board.pos("a2")).get().troop());
-        /*assertEquals(Optional.empty(), troops4.at(board.pos("a3")));
-        assertEquals(Optional.empty(), troops4.at(board.pos("b1")));*/
+        assertEquals(Optional.empty(), troops4.at(board.pos("a3")));
+        assertEquals(Optional.empty(), troops4.at(board.pos("b1")));
         assertSame(clubman2, troops4.at(board.pos("b2")).get().troop());
-        /*assertEquals(Optional.empty(), troops4.at(board.pos("b3")));
+        assertEquals(Optional.empty(), troops4.at(board.pos("b3")));
         assertEquals(Optional.empty(), troops4.at(board.pos("c1")));
         assertEquals(Optional.empty(), troops4.at(board.pos("c2")));
-        assertEquals(Optional.empty(), troops4.at(board.pos("c3")));*/
+        assertEquals(Optional.empty(), troops4.at(board.pos("c3")));
 
         // Nějaká další jednotka
         Troop spearman = new Troop("Spearman");
@@ -135,13 +132,13 @@ public class BoardTroopsTest {
 
         assertSame(clubman1, troops5.at(board.pos("a1")).get().troop());
         assertSame(drake, troops5.at(board.pos("a2")).get().troop());
-        /*assertEquals(Optional.empty(), troops5.at(board.pos("a3")));
-        assertEquals(Optional.empty(), troops5.at(board.pos("b1")));*/
+        assertEquals(Optional.empty(), troops5.at(board.pos("a3")));
+        assertEquals(Optional.empty(), troops5.at(board.pos("b1")));
         assertSame(clubman2, troops5.at(board.pos("b2")).get().troop());
-        //assertEquals(Optional.empty(), troops5.at(board.pos("b3"))
+        assertEquals(Optional.empty(), troops5.at(board.pos("b3")));
         assertSame(spearman, troops5.at(board.pos("c1")).get().troop());
-        /*assertEquals(Optional.empty(), troops5.at(board.pos("c2")));
-        assertEquals(Optional.empty(), troops5.at(board.pos("c3")));*/
+        assertEquals(Optional.empty(), troops5.at(board.pos("c2")));
+        assertEquals(Optional.empty(), troops5.at(board.pos("c3")));
     }
 
     @Test
@@ -150,7 +147,7 @@ public class BoardTroopsTest {
         BoardTroops troops = new BoardTroops(PlayingSide.ORANGE);
         assertSame(PlayingSide.ORANGE, troops.playingSide());
 
-        Troop drake = new Troop("Clubman");
+        Troop drake = new Troop("Drake");
         Troop clubman1 = new Troop("Clubman");
         Troop clubman2 = new Troop("Clubman");
         Troop spearman = new Troop("Spearman");
@@ -187,43 +184,43 @@ public class BoardTroopsTest {
 
         assertSame(clubman1, troops.at(board.pos("a1")).get().troop());
         assertSame(drake, troops.at(board.pos("a2")).get().troop());
-        /*assertEquals(Optional.empty(), troops.at(board.pos("a3")));
-        assertEquals(Optional.empty(), troops.at(board.pos("b1")));*/
+        assertEquals(Optional.empty(), troops.at(board.pos("a3")));
+        assertEquals(Optional.empty(), troops.at(board.pos("b1")));
         assertSame(clubman2, troops.at(board.pos("b2")).get().troop());
-        //assertEquals(Optional.empty(), troops.at(board.pos("b3")));
+        assertEquals(Optional.empty(), troops.at(board.pos("b3")));
         assertSame(spearman, troops.at(board.pos("c1")).get().troop());
-        /*assertEquals(Optional.empty(), troops.at(board.pos("c2")));
-        assertEquals(Optional.empty(), troops.at(board.pos("c3")));*/
+        assertEquals(Optional.empty(), troops.at(board.pos("c2")));
+        assertEquals(Optional.empty(), troops.at(board.pos("c3")));
 
         troops = troops.troopStep(board.pos("a2"), board.pos("a3"));
 
         assertSame(clubman1, troops.at(board.pos("a1")).get().troop());
-        //assertEquals(Optional.empty(), troops.at(board.pos("a2")));
+        assertEquals(Optional.empty(), troops.at(board.pos("a2")));
         assertSame(drake, troops.at(board.pos("a3")).get().troop());
-        //assertEquals(Optional.empty(), troops.at(board.pos("b1")));
+        assertEquals(Optional.empty(), troops.at(board.pos("b1")));
         assertSame(clubman2, troops.at(board.pos("b2")).get().troop());
         assertSame(drake, troops.at(board.pos("a3")).get().troop());
-        //assertEquals(Optional.empty(), troops.at(board.pos("b3")));
+        assertEquals(Optional.empty(), troops.at(board.pos("b3")));
         assertSame(spearman, troops.at(board.pos("c1")).get().troop());
-        //assertEquals(Optional.empty(), troops.at(board.pos("c2")));
-        //assertEquals(Optional.empty(), troops.at(board.pos("c3")));
+        assertEquals(Optional.empty(), troops.at(board.pos("c2")));
+        assertEquals(Optional.empty(), troops.at(board.pos("c3")));
 
         // Pozor na pozici vůdce
-        //assertEquals(board.pos("a3"), troops.leaderPosition());
+        assertEquals(board.pos("a3"), troops.leaderPosition());
 
-        /*try {
+        try {
             troops.troopStep(board.pos("a2"), board.pos("c2"));
             fail();
         } catch(IllegalArgumentException e) {
             // Není možné se pohnout z prázného políčka
-        }*/
+        }
 
-        /*try {
+        try {
             troops.troopStep(board.pos("c1"), board.pos("a3"));
             fail();
         } catch(IllegalArgumentException e) {
             // Není možné se pohnout na políčko s jednotkou
-        }*/
+        }
     }
 
     @Test
@@ -232,7 +229,7 @@ public class BoardTroopsTest {
         BoardTroops troops = new BoardTroops(PlayingSide.ORANGE);
         assertSame(PlayingSide.ORANGE, troops.playingSide());
 
-        Troop drake = new Troop("Clubman");
+        Troop drake = new Troop("Drake");
         Troop clubman1 = new Troop("Clubman");
         Troop clubman2 = new Troop("Clubman");
 
@@ -269,13 +266,13 @@ public class BoardTroopsTest {
         assertSame(drake, troops.at(board.pos("a2")).get().troop());
         assertSame(TroopFace.REVERS, troops.at(board.pos("a2")).get().face());
 
-        /*try {
+        try {
             troops.troopFlip(board.pos("a3"));
             fail();
         } catch(IllegalArgumentException e) {
             // Není možné otočit jednotku na prázdném políčku
         }
-        */
+
     }
 
     @Test
@@ -316,21 +313,21 @@ public class BoardTroopsTest {
 
         troops = troops.placeTroop(clubman2, board.pos("b2"));
 
-        /*try {
+        try {
             troops.removeTroop(board.pos("a3"));
             fail();
         } catch(IllegalArgumentException e) {
             // Není možné odstranit jednotku na prázdném políčku
-        }*/
+        }
 
         troops = troops.removeTroop(board.pos("a2"));
 
-       // assertSame(Optional.empty(), troops.at(board.pos("a2")));
-        //assertSame(TilePos.OFF_BOARD, troops.leaderPosition());
-        //assertFalse(troops.isLeaderPlaced());
+        assertSame(Optional.empty(), troops.at(board.pos("a2")));
+        assertSame(TilePos.OFF_BOARD, troops.leaderPosition());
+        assertFalse(troops.isLeaderPlaced());
     }
 
-    /*private void checkEmpty(Board board, BoardTroops boardTroops) {
+    private void checkEmpty(Board board, BoardTroops boardTroops) {
         assertEquals(Optional.empty(), boardTroops.at(board.pos("a1")));
         assertEquals(Optional.empty(), boardTroops.at(board.pos("a2")));
         assertEquals(Optional.empty(), boardTroops.at(board.pos("a3")));
@@ -342,7 +339,7 @@ public class BoardTroopsTest {
         assertEquals(Optional.empty(), boardTroops.at(board.pos("c3")));
 
         assertEquals(Collections.emptySet(), boardTroops.troopPositions());
-    }*/
+    }
 
 }
 
