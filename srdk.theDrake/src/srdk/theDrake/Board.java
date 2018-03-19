@@ -43,6 +43,22 @@ public class Board {
         return board[pos.i][pos.j];
     }
 
+    public Tile tileAt(TilePos position){
+        if(!contains(position))
+            throw new IllegalArgumentException();
+
+        return board[position.i()][position.j()];
+    }
+
+    public boolean contains(TilePos position){
+        if(position.i()<0 || position.j()<0)
+            return false;
+        if(position.i()>=dimension || position.j()>=dimension)
+            return false;
+
+        return true;
+    }
+
     public Board withTiles(TileAt ...ats) {
 
         return new Board(fillBoard(cloneBoard(), ats));
