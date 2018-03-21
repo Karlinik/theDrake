@@ -1,7 +1,5 @@
 package srdk.theDrake;
 
-import java.util.Optional;
-
 public class GameState{
 	private final Board board;
 	private final PlayingSide sideOnTurn;
@@ -66,19 +64,17 @@ public class GameState{
 	}
 	
 	private boolean canStepFrom(TilePos origin) {
-		if(!result.equals(result.IN_PLAY))
+		if(result!=(result.IN_PLAY))
 			return false;
 
-		if(!blueArmy.boardTroops().at(origin).isPresent() && !orangeArmy.boardTroops().at(origin).isPresent())
+		if(!armyOnTurn().boardTroops().at(origin).isPresent() || armyNotOnTurn().boardTroops().at(origin).isPresent())
 			return false;
 
-		if(!blueArmy.boardTroops().isLeaderPlaced() || blueArmy.boardTroops().isPlacingGuards())
+
+		if(!armyOnTurn().boardTroops().isLeaderPlaced() || armyOnTurn().boardTroops().isPlacingGuards())
 			return false;
 
-		if(blueArmy.boardTroops().at(origin).isPresent() && sideOnTurn.equals(sideOnTurn.ORANGE))
-			return false;
-
-		if(orangeArmy.boardTroops().at(origin).isPresent() && sideOnTurn.equals(sideOnTurn.BLUE))
+		if(!armyNotOnTurn().boardTroops().isLeaderPlaced() || armyNotOnTurn().boardTroops().isPlacingGuards())
 			return false;
 
 		return true;
@@ -88,19 +84,9 @@ public class GameState{
 		if(result!=(result.IN_PLAY))
 			return false;
 
-		if(sideOnTurn.equals(PlayingSide.BLUE)){
-			if(blueArmy.boardTroops().at(target).isPresent())
-				return false;
-			if(orangeArmy.boardTroops().at(target).isPresent() && orangeArmy.boardTroops().at(target).get().canStepOn())
-				return true;
-		}
+		if(!board.tileAt(target).canStepOn())
+			return false;
 
-		if(sideOnTurn.equals(PlayingSide.ORANGE)) {
-			if (orangeArmy.boardTroops().at(target).isPresent())
-				return false;
-			if (blueArmy.boardTroops().at(target).isPresent() && blueArmy.boardTroops().at(target).get().canStepOn())
-				return true;
-		}
 		return true;
 	}
 	
@@ -108,13 +94,8 @@ public class GameState{
 		if(result != result.IN_PLAY)
 			return false;
 
-		if(sideOnTurn.equals(PlayingSide.BLUE))
-			if(!orangeArmy.boardTroops().at(target).isPresent())
-				return false;
-
-		if(sideOnTurn.equals(PlayingSide.ORANGE))
-			if(!blueArmy.boardTroops().at(target).isPresent())
-				return false;
+		if(!armyNotOnTurn().boardTroops().at(target).isPresent())
+			return false;
 
 		return true;
 	}
@@ -130,9 +111,28 @@ public class GameState{
 	public boolean canPlaceFromStack(TilePos target) {
 		if(result != result.IN_PLAY)
 			return false;
-		if(sideOnTurn.equals(PlayingSide.BLUE))
-			if(!orangeArmy.boardTroops().at(target).isPresent())
+
+		if(armyOnTurn().stack().isEmpty())
+			return false;
+
+		if(!armyOnTurn().boardTroops().isLeaderPlaced()){
+			if(armyOnTurn().side()==PlayingSide.BLUE)
+				if(target.row()!=1) return false;
+			else if(target.row()!=4) return false;
+		}
+
+		if(armyOnTurn().boardTroops().isPlacingGuards()){
+			if(!target.isNextTo(armyOnTurn().boardTroops().leaderPosition()))
 				return false;
+		}
+
+		//asi by to melo jit jinak
+		if(!armyOnTurn().boardTroops().at(target.step(1,0)).isPresent() &&
+			!armyOnTurn().boardTroops().at(target.step(-1,0)).isPresent() &&
+			!armyOnTurn().boardTroops().at(target.step(0,1)).isPresent() &&
+			!armyOnTurn().boardTroops().at(target.step(0,-1)).isPresent()) return false;
+
+		return true;
 	}
 	
 	public GameState stepOnly(Board.Pos origin, Board.Pos target) {		

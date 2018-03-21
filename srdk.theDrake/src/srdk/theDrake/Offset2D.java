@@ -11,15 +11,10 @@ public class Offset2D{
     }
 
     public boolean equalsTo (int x , int y){
-        /*if(new Offset2D(x,y) == new Offset2D(x,y))
-            return true;
-        else
-            return false;*/
         return x == this.x && y == this.y;
     }
 
     public Offset2D yFlipped () {
-        //new Offset2D(x, y);
         return new Offset2D(x, -y);
 
     }
