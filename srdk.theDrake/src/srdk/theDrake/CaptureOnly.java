@@ -1,7 +1,14 @@
 package srdk.theDrake;
 
-/**
- * Created by Nikola Karlikova on 19.03.2018.
- */
-public class CaptureOnly {
+public class CaptureOnly extends BoardMove {
+
+    public CaptureOnly(Board.Pos origin, Board.Pos target) {
+        super(origin, target);
+    }
+
+    @Override
+    public GameState execute(GameState originState) {
+        return originState.captureOnly(origin(), target());
+    }
+
 }

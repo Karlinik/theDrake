@@ -1,14 +1,15 @@
 package suite02;
 
-import org.junit.Test;
-import srdk.theDrake.Board;
-import srdk.theDrake.BoardTile;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import srdk.theDrake.Board;
+import srdk.theDrake.BoardTile;
 
 public class BoardTest {
 

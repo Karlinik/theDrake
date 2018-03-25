@@ -1,5 +1,7 @@
 package srdk.theDrake;
 
+import java.util.List;
+
 public class TroopTile implements Tile{
 
     private Troop troop;
@@ -38,5 +40,10 @@ public class TroopTile implements Tile{
     public boolean hasTroop() {
         return troop != null;
 
+    }
+
+    @Override
+    public List<Move> movesFrom(Board.Pos pos, GameState state) {
+        return null;
     }
 }

@@ -1,5 +1,8 @@
 package srdk.theDrake;
 
+import java.util.Collections;
+import java.util.List;
+
 public interface BoardTile extends Tile {
     public static BoardTile EMPTY = new BoardTile() {
 
@@ -25,4 +28,9 @@ public interface BoardTile extends Tile {
             return false;
         }
     };
+
+    @Override
+    default List<Move> movesFrom(Board.Pos pos, GameState state) {
+        return Collections.emptyList();
+    }
 }

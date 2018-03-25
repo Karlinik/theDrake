@@ -1,12 +1,20 @@
 package suite02;
 
-import org.junit.Test;
-import srdk.theDrake.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import srdk.theDrake.Offset2D;
+import srdk.theDrake.PlayingSide;
+import srdk.theDrake.Troop;
+import srdk.theDrake.TroopFace;
+import srdk.theDrake.TroopTile;
 
 public class TroopTileTest {
 
@@ -21,8 +29,9 @@ public class TroopTileTest {
 	
 	@Test
 	public void behaviour() {
-		Troop monk = new Troop("Monk", new Offset2D(1, 1));
-		Troop drake = new Troop("Drake");
+		Troop monk = new Troop("Monk", new Offset2D(1, 1), 
+				Collections.emptyList(), Collections.emptyList());
+		Troop drake = new Troop("Drake", Collections.emptyList(), Collections.emptyList());
 		
 		TroopTile tile1 = new TroopTile(monk, PlayingSide.BLUE, TroopFace.AVERS);
 		TroopTile tile2 = new TroopTile(drake, PlayingSide.ORANGE, TroopFace.REVERS);
