@@ -1,7 +1,14 @@
 package srdk.theDrake;
 
-/**
- * Created by Nikola Karlikova on 19.03.2018.
- */
-public class PlaceFromStack {
+public class PlaceFromStack extends Move {
+
+    public PlaceFromStack(Board.Pos target) {
+        super(target);
+    }
+
+    @Override
+    public GameState execute(GameState originState) {
+        return originState.placeFromStack(target());
+    }
+
 }
