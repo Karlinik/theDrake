@@ -1,23 +1,13 @@
 package suite04;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import srdk.theDrake.*;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
-
-import srdk.theDrake.Army;
-import srdk.theDrake.Board;
-import srdk.theDrake.BoardTroops;
-import srdk.theDrake.CaptureOnly;
-import srdk.theDrake.GameState;
-import srdk.theDrake.Move;
-import srdk.theDrake.PlayingSide;
-import srdk.theDrake.StandardDrakeSetup;
-import srdk.theDrake.StepAndCapture;
-import srdk.theDrake.StepOnly;
+import static org.junit.Assert.assertEquals;
 
 public class ActionsTest {
 
@@ -50,7 +40,7 @@ public class ActionsTest {
 		Army orangeArmy = new Army(orangeTroops, Collections.emptyList(), Collections.emptyList());
 		
 		GameState state = new GameState(board, blueArmy, orangeArmy);
-		
+
 		assertEquals(
 			makeSet(
 				new StepOnly(board.pos("a1"), board.pos("b1")),
@@ -60,7 +50,7 @@ public class ActionsTest {
 			new HashSet<Move>(
 				state.tileAt(board.pos("a1")).movesFrom(board.pos("a1"), state)
 			)
-		);	
+		);
 		
 		assertEquals(
 				makeSet(
@@ -80,6 +70,7 @@ public class ActionsTest {
 					state.tileAt(board.pos("b2")).movesFrom(board.pos("b2"), state)
 				)
 			);
+
 	
 	}
 }
