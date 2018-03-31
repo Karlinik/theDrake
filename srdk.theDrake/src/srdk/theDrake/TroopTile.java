@@ -1,5 +1,6 @@
 package srdk.theDrake;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TroopTile implements Tile{
@@ -44,6 +45,12 @@ public class TroopTile implements Tile{
 
     @Override
     public List<Move> movesFrom(Board.Pos pos, GameState state) {
-        return null;
+        List<Move> result = new ArrayList<>();
+
+        for(TroopAction action : troop.actions(face)){
+            result.addAll(action.movesFrom(pos, this.side, state));
+        }
+
+        return result;
     }
 }

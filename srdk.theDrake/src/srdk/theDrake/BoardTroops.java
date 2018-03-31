@@ -1,8 +1,9 @@
 package srdk.theDrake;
 
+import java.io.PrintWriter;
 import java.util.*;
 
-public class BoardTroops {
+public class BoardTroops implements JSONSerializable{
     private final PlayingSide playingSide;
     private final Map<Board.Pos, TroopTile> troopMap;
     private final TilePos leaderPosition;
@@ -126,5 +127,27 @@ public class BoardTroops {
         if(leaderPosition.equals(target))
             return new BoardTroops(playingSide(), newTroops, TilePos.OFF_BOARD, guards);
         return new BoardTroops(playingSide(), newTroops, leaderPosition, guards);
+    }
+
+    @Override
+    public void toJSON(PrintWriter writer) {
+        writer.println("\"side\": \"" + this.playingSide() + "\",");
+        writer.println("\"leaderPosition\": \"" + this.leaderPosition.i() + this.leaderPosition.j() + "\",");
+        writer.println("\"guards\": \"" + this.guards + "\",");
+        writer.println("\"troopMap\": {\"");
+        int i=1;
+        for (Map.Entry<Board.Pos, TroopTile> entry : troopMap.entrySet()){
+            if(i>1)
+                writer.println(",");
+            if (entry.getValue().hasTroop()){
+                writer.println("\"" + entry.getKey().i() + entry.getKey().j() + "\": {");
+                writer.println("\"troop\": \""+ entry.getValue().troop() + "\",");
+                writer.println("\"side\": \""+ entry.getValue().side() + "\",");
+                writer.println("\"face\": \"" + entry.getValue().face() + "\"");
+                writer.println("}");
+            }
+            i++;
+        }
+        writer.println("}");
     }
 }

@@ -1,6 +1,8 @@
 package srdk.theDrake;
 
-public class Board {
+import java.io.PrintWriter;
+
+public class Board implements JSONSerializable{
 
     private final int dimension;
     private final BoardTile[][] board;
@@ -205,6 +207,21 @@ public class Board {
         public String toString() {
             return String.format("%c%d", column(), row());
         }
+    }
+
+    @Override
+    public void toJSON(PrintWriter writer) {
+
+        writer.println("\"dimension\":" + this.dimension() + ", \"tiles\": [");
+
+        for(BoardTile[] tileRow : board){
+            for(BoardTile tile : tileRow){
+                if(tile.equals(BoardTile.EMPTY))
+                    writer.println("\"empty\",");
+                writer.println("\"mountain\",");
+            }
+        }
+        writer.println("]");
     }
 }
 

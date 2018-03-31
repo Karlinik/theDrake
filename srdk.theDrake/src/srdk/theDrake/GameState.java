@@ -1,6 +1,8 @@
 package srdk.theDrake;
 
-public class GameState{
+import java.io.PrintWriter;
+
+public class GameState implements JSONSerializable{
 	private final Board board;
 	private final PlayingSide sideOnTurn;
 	private final Army blueArmy;
@@ -58,13 +60,17 @@ public class GameState{
 	}
 	
 	public Tile tileAt(Board.Pos pos) {
-		if(!blueArmy.boardTroops().at(pos).isPresent() && !orangeArmy.boardTroops().at(pos).isPresent())
-			return board.at(pos);
+		if(blueArmy.boardTroops().at(pos).isPresent()){
+			return blueArmy.boardTroops().at(pos).get();
+		} else if(orangeArmy.boardTroops().at(pos).isPresent()){
+			return orangeArmy.boardTroops().at(pos).get();
+		}
+
 		throw new IllegalArgumentException();
 	}
 	
 	private boolean canStepFrom(TilePos origin) {
-		if(result!=(result.IN_PLAY))
+		if(!result.equals(result.IN_PLAY))
 			return false;
 
 		if(!armyOnTurn().boardTroops().at(origin).isPresent() || armyNotOnTurn().boardTroops().at(origin).isPresent())
@@ -81,17 +87,17 @@ public class GameState{
 	}
 
 	private boolean canStepTo(TilePos target) {
-		if(result!=(result.IN_PLAY))
+		if(!result.equals(result.IN_PLAY))
 			return false;
 
-		if(!board.tileAt(target).canStepOn())
+		if(armyOnTurn().boardTroops().at(target).isPresent() || armyNotOnTurn().boardTroops().at(target).isPresent())
 			return false;
 
 		return true;
 	}
 	
 	private boolean canCaptureOn(TilePos target) {
-		if(result != result.IN_PLAY)
+		if(!result.equals(result.IN_PLAY))
 			return false;
 
 		if(!armyNotOnTurn().boardTroops().at(target).isPresent())
@@ -101,7 +107,10 @@ public class GameState{
 	}
 	
 	public boolean canStep(TilePos origin, TilePos target)  {
-		return canStepFrom(origin) && canStepTo(target);
+		if((armyOnTurn().boardTroops().at(origin).isPresent() && armyOnTurn().boardTroops().at(target).isPresent())
+				|| (armyNotOnTurn().boardTroops().at(origin).isPresent() && armyNotOnTurn().boardTroops().at(target).isPresent()))
+			return false;
+		return (canStepFrom(origin) && canStepTo(target) );
 	}
 	
 	public boolean canCapture(TilePos origin, TilePos target)  {
@@ -109,25 +118,28 @@ public class GameState{
 	}
 	
 	public boolean canPlaceFromStack(TilePos target) {
-		if(result != result.IN_PLAY)
+		if(!result.equals(result.IN_PLAY))
+			return false;
+
+		if(target.equals(TilePos.OFF_BOARD))
+			return false;
+
+		if(armyOnTurn().boardTroops().at(target).isPresent())
 			return false;
 
 		if(armyOnTurn().stack().isEmpty())
 			return false;
 
 		if(!armyOnTurn().boardTroops().isLeaderPlaced()){
-			if(armyOnTurn().side()==PlayingSide.BLUE)
-				if(target.row()!=1) return false;
-			else if(target.row()!=4) return false;
-		}
-
-		if(armyOnTurn().boardTroops().isPlacingGuards()){
+			if(armyOnTurn().side()==PlayingSide.BLUE){
+				if(target.row() != 1)
+					return false;
+			} else if(target.row()!=4)
+				return false;
+		}else if(armyOnTurn().boardTroops().isPlacingGuards()){
 			if(!target.isNextTo(armyOnTurn().boardTroops().leaderPosition()))
 				return false;
-		}
-
-		//asi by to melo jit jinak
-		if(!armyOnTurn().boardTroops().at(target.step(1,0)).isPresent() &&
+		}else if(!armyOnTurn().boardTroops().at(target.step(1,0)).isPresent() &&
 			!armyOnTurn().boardTroops().at(target.step(-1,0)).isPresent() &&
 			!armyOnTurn().boardTroops().at(target.step(0,1)).isPresent() &&
 			!armyOnTurn().boardTroops().at(target.step(0,-1)).isPresent()) return false;
@@ -207,5 +219,26 @@ public class GameState{
 		}
 		
 		return new GameState(board, armyNotOnTurn, armyOnTurn, PlayingSide.ORANGE, result); 
+	}
+
+	@Override
+	public void toJSON(PrintWriter writer) {
+		writer.println("{");
+
+		writer.println("\"result\": \"" + this.result + "\",");
+
+		writer.println("\"board\": { ");
+		this.board.toJSON(writer);
+		writer.println("},");
+
+		writer.println("\"bluearmy\": {");
+		this.blueArmy.toJSON(writer);
+		writer.println("},");
+
+		writer.println("\"orangearmy\": {");
+		this.orangeArmy.toJSON(writer);
+		writer.println("}");
+
+		writer.println("}");
 	}
 }

@@ -1,10 +1,11 @@
 package srdk.theDrake;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Army {
+public class Army implements JSONSerializable{
     private final BoardTroops boardTroops;
     private final List<Troop> stack;
     private final List<Troop> captured;
@@ -77,6 +78,33 @@ public class Army {
         newCaptured.add(troop);
 
         return new Army(boardTroops, stack, newCaptured);
+    }
+
+    @Override
+    public void toJSON(PrintWriter writer) {
+        writer.println("\"boardTroops\": { ");
+        boardTroops.toJSON(writer);
+        writer.println("},");
+
+        writer.println("\"stack\": [ ");
+        int i=1;
+        for(Troop troop : stack){
+            if(i>1)
+                writer.println(",");
+            writer.println("\"" + troop.name() +"\"");
+            i++;
+        }
+        writer.println("],");
+
+        writer.println("\"captured\": [ ");
+        i=1;
+        for(Troop troop : captured){
+            if(i>1)
+                writer.println(",");
+            writer.println("\"" + troop.name() +"\"");
+            i++;
+        }
+        writer.println("]");
     }
 }
 
