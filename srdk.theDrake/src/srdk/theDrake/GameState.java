@@ -76,11 +76,13 @@ public class GameState implements JSONSerializable{
 		if(!armyOnTurn().boardTroops().at(origin).isPresent() || armyNotOnTurn().boardTroops().at(origin).isPresent())
 			return false;
 
-
 		if(!armyOnTurn().boardTroops().isLeaderPlaced() || armyOnTurn().boardTroops().isPlacingGuards())
 			return false;
 
 		if(!armyNotOnTurn().boardTroops().isLeaderPlaced() || armyNotOnTurn().boardTroops().isPlacingGuards())
+			return false;
+
+		if(origin.equals(TilePos.OFF_BOARD))
 			return false;
 
 		return true;
@@ -93,6 +95,9 @@ public class GameState implements JSONSerializable{
 		if(armyOnTurn().boardTroops().at(target).isPresent() || armyNotOnTurn().boardTroops().at(target).isPresent())
 			return false;
 
+		if(target.equals(TilePos.OFF_BOARD))
+			return false;
+
 		return true;
 	}
 	
@@ -103,6 +108,9 @@ public class GameState implements JSONSerializable{
 		if(!armyNotOnTurn().boardTroops().at(target).isPresent())
 			return false;
 
+		if(target.equals(TilePos.OFF_BOARD))
+			return false;
+
 		return true;
 	}
 	
@@ -110,6 +118,15 @@ public class GameState implements JSONSerializable{
 		if((armyOnTurn().boardTroops().at(origin).isPresent() && armyOnTurn().boardTroops().at(target).isPresent())
 				|| (armyNotOnTurn().boardTroops().at(origin).isPresent() && armyNotOnTurn().boardTroops().at(target).isPresent()))
 			return false;
+
+		/*List<Move> moves = this.tileAt(board.pos(origin.toString())).movesFrom(board.pos(origin.toString()), this);
+		for(Move move : moves){
+			if(move.target().equals(target))
+				return (canStepFrom(origin) && canStepTo(target) );
+		}
+
+		return false;*/
+
 		return (canStepFrom(origin) && canStepTo(target) );
 	}
 	
@@ -124,7 +141,7 @@ public class GameState implements JSONSerializable{
 		if(target.equals(TilePos.OFF_BOARD))
 			return false;
 
-		if(armyOnTurn().boardTroops().at(target).isPresent())
+		if(armyOnTurn().boardTroops().at(target).isPresent() || armyNotOnTurn().boardTroops().at(target).isPresent())
 			return false;
 
 		if(armyOnTurn().stack().isEmpty())
@@ -134,7 +151,7 @@ public class GameState implements JSONSerializable{
 			if(armyOnTurn().side()==PlayingSide.BLUE){
 				if(target.row() != 1)
 					return false;
-			} else if(target.row()!=4)
+			} else if(target.row()!=board.dimension())
 				return false;
 		}else if(armyOnTurn().boardTroops().isPlacingGuards()){
 			if(!target.isNextTo(armyOnTurn().boardTroops().leaderPosition()))
