@@ -1,6 +1,6 @@
 package srdk.theDrake;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ShiftAction extends TroopAction {
@@ -15,17 +15,16 @@ public class ShiftAction extends TroopAction {
 
 	@Override
 	public List<Move> movesFrom(Board.Pos origin, PlayingSide side, GameState state) {
-		List<Move> result = new ArrayList<>();
 		TilePos target = origin.stepByPlayingSide(offset(), side);
 
 		if(!target.equals(TilePos.OFF_BOARD)){
 			if(state.canCapture(origin, target)) {
-				result.add(new StepAndCapture(origin, (Board.Pos)target));
+				return Collections.singletonList(new StepAndCapture(origin, (Board.Pos)target));
 			} else if(state.canStep(origin, target)) {
-				result.add(new StepOnly(origin, (Board.Pos)target));
+				return Collections.singletonList(new StepOnly(origin, (Board.Pos)target));
 			}
 		}
 
-		return result;
+		return Collections.emptyList();
 	}
 }

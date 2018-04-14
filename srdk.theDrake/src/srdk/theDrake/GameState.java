@@ -98,6 +98,9 @@ public class GameState implements JSONSerializable{
 		if(target.equals(TilePos.OFF_BOARD))
 			return false;
 
+		if(!board.tileAt(target).canStepOn())
+			return false;
+
 		return true;
 	}
 	
@@ -119,14 +122,6 @@ public class GameState implements JSONSerializable{
 				|| (armyNotOnTurn().boardTroops().at(origin).isPresent() && armyNotOnTurn().boardTroops().at(target).isPresent()))
 			return false;
 
-		/*List<Move> moves = this.tileAt(board.pos(origin.toString())).movesFrom(board.pos(origin.toString()), this);
-		for(Move move : moves){
-			if(move.target().equals(target))
-				return (canStepFrom(origin) && canStepTo(target) );
-		}
-
-		return false;*/
-
 		return (canStepFrom(origin) && canStepTo(target) );
 	}
 	
@@ -139,6 +134,9 @@ public class GameState implements JSONSerializable{
 			return false;
 
 		if(target.equals(TilePos.OFF_BOARD))
+			return false;
+
+		if(!board.tileAt(target).canStepOn())
 			return false;
 
 		if(armyOnTurn().boardTroops().at(target).isPresent() || armyNotOnTurn().boardTroops().at(target).isPresent())

@@ -19,7 +19,7 @@ public class StrikeAction extends TroopAction {
     public List<Move> movesFrom(Board.Pos origin, PlayingSide side, GameState state) {
         TilePos target = origin.stepByPlayingSide(offset(), side);
 
-        if(!target.equals(TilePos.OFF_BOARD) && state.canStep(origin, target) && state.canCapture(origin, target))
+        if(!target.equals(TilePos.OFF_BOARD) && state.canCapture(origin, target))
             return Collections.singletonList(new CaptureOnly(origin, (Board.Pos)target));
 
         return Collections.emptyList();
